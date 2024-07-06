@@ -9,11 +9,12 @@ set(CMAKE_CXX_STANDARD_REQUIRED ON)
 set(CMAKE_CXX_EXTENSIONS OFF)
 
 file(GLOB_RECURSE SOURCES "src/*.cpp")
+list(REMOVE_ITEM SOURCES "src/main.cpp")
 add_library(${PROJECT_NAME}_lib ${SOURCES})
 target_include_directories(${PROJECT_NAME}_lib PUBLIC include)
 
-add_executable(${PROJECT_NAME}_bin src/main.cpp)
-target_link_libraries(${PROJECT_NAME}_bin ${PROJECT_NAME}_lib)
+# add_executable(${PROJECT_NAME}_bin src/main.cpp)
+# target_link_libraries(${PROJECT_NAME}_bin ${PROJECT_NAME}_lib)
 
 find_package(GTest CONFIG REQUIRED)
 file(GLOB_RECURSE TEST_SOURCES "test/*.cpp")
