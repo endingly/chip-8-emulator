@@ -5,6 +5,8 @@
 #include <cstring>
 #include <ctime>
 
+chip_8::Chip8System* chip_8::Chip8System::instance = nullptr;
+
 void chip_8::Chip8System::print_state() {
   std::printf("-----------------------current state------------------------------\n");
   std::printf("V0: 0x%02x  V4: 0x%02x  V8: 0x%02x  VC: 0x%02x\n", V[0], V[4], V[8], V[12]);
@@ -13,6 +15,14 @@ void chip_8::Chip8System::print_state() {
   std::printf("V3: 0x%02x  V7: 0x%02x  VB: 0x%02x  VF: 0x%02x\n", V[3], V[7], V[11], V[15]);
   std::printf("\n");
   std::printf("PC: 0x%04x\n", program_counter);
+}
+
+chip_8::Chip8System* chip_8::Chip8System::get_instance() {
+  if (instance == nullptr) {
+    instance = new Chip8System();
+    instance->initialize();
+  }
+  return instance;
 }
 
 void chip_8::Chip8System::initialize() {
@@ -36,9 +46,7 @@ void chip_8::Chip8System::initialize() {
   std::srand(std::time(nullptr));
 }
 
-void chip_8::Chip8System::emulate_cycle() {
-    
-}
+void chip_8::Chip8System::emulate_cycle() {}
 
 void chip_8::Chip8System::tick() {
   // update timers

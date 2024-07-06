@@ -4,6 +4,6 @@
 
 TEST(Chip8, DebugPrint) {
   using namespace chip_8;
-  chip_8::Chip8System chip8;
-  chip8.print_state();
+  auto chip8 = chip_8::Chip8System::get_instance();
+  chip8->print_state();
 }
