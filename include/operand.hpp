@@ -112,7 +112,7 @@ class Operand {
   /// @brief `FX0A` - `Vx = key()`
   /// @details A key press is awaited, and then stored in VX (blocking operation, all instruction halted until next key
   /// event).
-  [[gnu::always_inline]] static void wait_for_key_press(uint16_t value);
+  [[gnu::always_inline]] inline static void wait_for_key_press(uint16_t value);
   /// @brief `FX15` - `delay_timer = Vx`
   /// @details Set the value of the delay timer to the value of a register.
   inline static void set_delay_timer(uint16_t value);
@@ -127,7 +127,8 @@ class Operand {
   /// register.
   inline static void set_index_to_sprite_address(uint16_t value);
   /// @brief `FX33` - `BCD(Vx)`
-  /// @details Store the binary-coded decimal representation of the value of a register in memory locations I, I+1, and I+2.
+  /// @details Store the binary-coded decimal representation of the value of a register in memory locations I, I+1, and
+  /// I+2.
   inline static void store_bcd(uint16_t value);
   /// @brief `FX55` - `reg_dump(Vx)`
   /// @details Store the values of registers V0 to Vx in memory starting at address I.
