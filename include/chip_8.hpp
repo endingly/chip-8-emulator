@@ -5,9 +5,6 @@
 
 #pragma once
 #include <cstdint>
-#include <memory>
-
-#include "operand.hpp"
 
 namespace chip_8 {
 

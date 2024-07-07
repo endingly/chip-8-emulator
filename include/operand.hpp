@@ -1,7 +1,8 @@
 #pragma once
-#include <cstdint>
 #include <functional>
 #include <map>
+
+#include "chip_8.hpp"
 namespace chip_8 {
 
 /// @brief Enum for the different types of operands in the Chip-8 instruction set.
@@ -48,15 +49,23 @@ class Operand {
  private:
   uint16_t                                                          value;
   const static std::map<OperandType, std::function<void(uint16_t)>> isa_set;
+  static chip_8::Chip8System*                                       system;
 
  public:
-  Operand()  = default;
+  Operand() = default;
+  Operand(uint16_t value) : value(value) {}
+  inline void Do();
   ~Operand() = default;
 
  private:
   inline static void call(uint16_t value);
+  inline static void clear_screen(uint16_t value);
   inline static void return_subroutine(uint16_t value);
   inline static void jump_to_address(uint16_t value);
+  inline static void call_subroutine(uint16_t value);
+  inline static void skip_if_equal(uint16_t value);
+  inline static void skip_if_not_equal(uint16_t value);
+  inline static void skip_if_register_equal(uint16_t value);
 };
 
 }  // namespace chip_8
