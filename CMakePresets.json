@@ -14,6 +14,36 @@
                 "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
             },
             "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+        },
+        {
+            "name": "windows-mingw-gcc-x64-debug",
+            "displayName": "GCC 14.1.0 x86_64-w64-mingw32 (ucrt64) Debug",
+            "generator": "MinGW Makefiles",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_C_COMPILER": "gcc.exe",
+                "CMAKE_CXX_COMPILER": "g++.exe",
+                "CMAKE_BUILD_TYPE": "Debug",
+                "VCPKG_TARGET_TRIPLET": "x64-mingw-dynamic",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            },
+            "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
+        },
+        {
+            "name": "windows-mingw-gcc-x64-release",
+            "displayName": "GCC 14.1.0 x86_64-w64-mingw32 (ucrt64) Release",
+            "generator": "MinGW Makefiles",
+            "binaryDir": "${sourceDir}/out/build/${presetName}",
+            "cacheVariables": {
+                "CMAKE_INSTALL_PREFIX": "${sourceDir}/out/install/${presetName}",
+                "CMAKE_C_COMPILER": "gcc.exe",
+                "CMAKE_CXX_COMPILER": "g++.exe",
+                "CMAKE_BUILD_TYPE": "Release",
+                "VCPKG_TARGET_TRIPLET": "x64-mingw-dynamic",
+                "CMAKE_EXPORT_COMPILE_COMMANDS": "ON"
+            },
+            "toolchainFile": "$env{VCPKG_ROOT}/scripts/buildsystems/vcpkg.cmake"
         }
     ]
 }

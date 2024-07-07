@@ -8,8 +8,7 @@
 
 namespace chip_8 {
 
-class Chip8System {
- private:
+struct Chip8System {
   // CHIP-8 system constants
   static constexpr uint32_t MEMORY_MAX_SIZE        = 4096;
   static constexpr uint32_t REGISTER_COUNT         = 16;
@@ -38,9 +37,7 @@ class Chip8System {
       0xF0, 0x80, 0xF0, 0x80, 0xF0,  // E
       0xF0, 0x80, 0xF0, 0x80, 0x80   // F
   };
-  static Chip8System* instance;
 
- public:
   // CHIP-8 system variables
   uint8_t  memory[MEMORY_MAX_SIZE];
   uint8_t  V[REGISTER_COUNT];
@@ -55,10 +52,6 @@ class Chip8System {
   uint8_t  key[KEY_COUNT];
   bool     chip8_draw_flag;
 
- private:
-  Chip8System()  = default;
-  ~Chip8System() = default;
-
  public:
   /// @brief the function to initialize the CHIP-8 system
   void initialize();
@@ -69,6 +62,11 @@ class Chip8System {
   void                tick();
   void                print_state();
   static Chip8System* get_instance();
+
+ private:
+  static Chip8System* instance;
+  Chip8System()  = default;
+  ~Chip8System() = default;
 };
 
 }  // namespace chip_8

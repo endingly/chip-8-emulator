@@ -12,4 +12,5 @@ TEST(Chip8, DebugPrint) {
 TEST(Operand, DebugPrint) {
   using namespace chip_8;
   auto operand = chip_8::Operand(0x1234);
+  std::cout << sizeof(operand) << std::endl;
 }
