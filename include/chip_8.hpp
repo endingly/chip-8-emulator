@@ -5,6 +5,7 @@
 
 #pragma once
 #include <cstdint>
+#include <string>
 
 namespace chip_8 {
 
@@ -55,7 +56,7 @@ struct Chip8System {
  public:
   /// @brief the function to initialize the CHIP-8 system
   void initialize();
-  void loadgame(char* game);
+  void loadgame(const std::string& game_file_path);
   void emulate_cycle();
   void set_keys();
   /// @brief the function to tick the timer of beep sound

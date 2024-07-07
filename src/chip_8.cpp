@@ -4,6 +4,9 @@
 #include <cstdlib>
 #include <cstring>
 #include <ctime>
+#include <fstream>
+
+#include "operand.hpp"
 
 chip_8::Chip8System* chip_8::Chip8System::instance = nullptr;
 
@@ -46,7 +49,29 @@ void chip_8::Chip8System::initialize() {
   std::srand(std::time(nullptr));
 }
 
-void chip_8::Chip8System::emulate_cycle() {}
+void chip_8::Chip8System::loadgame(const std::string& game_file_path) {
+  std::fstream file;
+  file.open(game_file_path, std::ios::in | std::ios::binary);
+  if (!file.is_open()) {
+    std::printf("Failed to open file: %s\n", game_file_path.c_str());
+    return;
+  }
+  file.read((char*)this->memory + 0x200, MEMORY_MAX_SIZE - 0x200);
+  file.close();
+}
+
+void chip_8::Chip8System::emulate_cycle() {
+#ifdef DEBUG
+  printf("PC: 0x%04x Op: 0x%04x\n", PC, opcode);
+#endif
+  // Fetch Opcode
+  Operand opcode =
+      static_cast<Operand>((this->memory[this->program_counter] << 8) | this->memory[this->program_counter + 1]);
+  opcode.Do();
+#ifdef DEBUG
+  this->print_state();
+#endif
+}
 
 void chip_8::Chip8System::tick() {
   // update timers

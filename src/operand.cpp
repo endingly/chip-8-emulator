@@ -42,8 +42,6 @@ const std::map<chip_8::OperandType, std::function<void(uint16_t)>> chip_8::Opera
     {chip_8::OperandType::_FX55, store_registers},
     {chip_8::OperandType::_FX65, load_registers}};
 
-inline void chip_8::Operand::Do() { isa_set.at(static_cast<OperandType>(value))(value); }
-
 /// ***************************** Implementation of the ISA set ********************************************/
 inline void chip_8::Operand::call(uint16_t value) { system->program_counter = (value & 0x0FFF); }
 

@@ -54,7 +54,7 @@ class Operand {
  public:
   Operand() = default;
   Operand(uint16_t value) : value(value) {}
-  inline void Do();
+  inline void Do() { isa_set.at(static_cast<OperandType>(value))(value); }
   ~Operand() = default;
 
  private:
