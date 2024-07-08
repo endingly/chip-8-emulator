@@ -3,11 +3,81 @@
 #include <GL/glu.h>
 #include <GL/glut.h>
 
+#include <chrono>
 #include <iostream>
 
 #include "chip_8.hpp"
 
-constexpr int SCREEN_PIXELS = 5;
+// variables
+chip_8::Chip8System* chip8System   = chip_8::Chip8System::get_instance();
+constexpr int        SCREEN_PIXELS = 5;
+constexpr int        BLACK         = 0;
+constexpr int        WHITE         = 255;
+constexpr int        PIXEL_SIZE    = 5;
+constexpr int        SCREEN_ROWS   = chip8System->SCREEN_HEIGHT * PIXEL_SIZE;
+constexpr int        SCREEN_COLS   = chip8System->SCREEN_WIDTH * PIXEL_SIZE;
+
+/// @brief Calculate time difference
+/// @param now now time point
+/// @param prev previous time point
+/// @return time difference in milliseconds
+inline int64_t timediff_ms(std::chrono::high_resolution_clock::time_point now,
+                           std::chrono::high_resolution_clock::time_point prev) {
+  return std::chrono::duration_cast<std::chrono::milliseconds>(now - prev).count();
+}
+
+inline void paint_pixel(int row, int col, unsigned char color) {
+  row                           = chip8System->SCREEN_HEIGHT - 1 - row;
+  chip8System->screen[row][col] = chip8System->screen[row][col] = chip8System->screen[row][col] = color;
+}
+
+void paint_cell(int row, int col, unsigned char color) {
+  int pixel_row = row * PIXEL_SIZE;
+  int pixel_col = col * PIXEL_SIZE;
+  int drow, dcol;
+  for (drow = 0; drow < PIXEL_SIZE; drow++) {
+    for (dcol = 0; dcol < PIXEL_SIZE; dcol++) {
+      paint_pixel(pixel_row + drow, pixel_col + dcol, color);
+    }
+  }
+}
+
+void draw() {
+  // Clear framebuffer
+  glClear(GL_COLOR_BUFFER_BIT);
+  // Draw pixels to the buffer
+  for (int row = 0; row < chip8System->SCREEN_WIDTH; row++) {
+    for (int col = 0; col < chip8System->SCREEN_HEIGHT; col++) {
+      paint_cell(row, col, chip8System->screen[row][col] ? WHITE : BLACK);
+    }
+  }
+
+  // Update Texture
+  glDrawPixels(SCREEN_COLS, SCREEN_ROWS, GL_RGB, GL_UNSIGNED_BYTE, (void*)chip8System->screen);
+  glutSwapBuffers();
+}
+
+void loop() {
+  // Get current time
+  auto             clock_now     = std::chrono::high_resolution_clock::now();
+  static auto      clock_prev    = clock_now;
+  static const int CLOCK_RATE_MS = 1000 / 60;
+
+  chip8System->emulate_cycle();
+
+  if (chip8System->chip8_draw_flag) {
+    draw();
+    chip8System->chip8_draw_flag = false;
+  }
+
+  int64_t timediff = timediff_ms(clock_now, clock_prev);
+  // if time difference is greater than CLOCK_RATE_MS, then we neeed tick the emulator
+  if (timediff > CLOCK_RATE_MS) {
+    // tick emulator
+    chip8System->tick();
+    clock_prev = clock_now;
+  }
+}
 
 int main(int argc, char* argv[]) {
   // check if a game file is provided
@@ -27,4 +97,6 @@ int main(int argc, char* argv[]) {
   glutInitWindowSize(chip8System->SCREEN_HEIGHT * SCREEN_PIXELS, chip8System->SCREEN_WIDTH * SCREEN_PIXELS);
   glutInitWindowPosition(0, 0);
   glutCreateWindow("CHIP-8 Emulator");
+  glutMainLoop();
+  return 0;
 };
