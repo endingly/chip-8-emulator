@@ -1,6 +1,7 @@
-// #include <GL/gl.h>
-// #include <GL/glu.h>
-// #include <GL/glut.h>
+
+#include <GL/gl.h>
+#include <GL/glu.h>
+#include <GL/glut.h>
 
 #include <iostream>
 
@@ -21,9 +22,9 @@ int main(int argc, char* argv[]) {
   chip8System->loadgame(argv[1]);
 
   // initialize graphics
-  //   glutInit(&argc, argv);
-  //   glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
-  //   glutInitWindowSize(chip8System->SCREEN_HEIGHT * SCREEN_PIXELS, chip8System->SCREEN_WIDTH * SCREEN_PIXELS);
-  //   glutInitWindowPosition(0, 0);
-  //   glutCreateWindow("CHIP-8 Emulator");
+  glutInit(&argc, argv);
+  glutInitDisplayMode(GLUT_DOUBLE | GLUT_RGB);
+  glutInitWindowSize(chip8System->SCREEN_HEIGHT * SCREEN_PIXELS, chip8System->SCREEN_WIDTH * SCREEN_PIXELS);
+  glutInitWindowPosition(0, 0);
+  glutCreateWindow("CHIP-8 Emulator");
 };
