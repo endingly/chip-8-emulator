@@ -5,11 +5,11 @@
 
 #pragma once
 #include <cstdint>
+#include <string>
 
 namespace chip_8 {
 
-class Chip8System {
- private:
+struct Chip8System {
   // CHIP-8 system constants
   static constexpr uint32_t MEMORY_MAX_SIZE        = 4096;
   static constexpr uint32_t REGISTER_COUNT         = 16;
@@ -54,19 +54,20 @@ class Chip8System {
   bool     chip8_draw_flag;
 
  public:
-  Chip8System()  = default;
-  ~Chip8System() = default;
-
   /// @brief the function to initialize the CHIP-8 system
   void initialize();
-  void loadgame(char *game);
+  void loadgame(const std::string& game_file_path);
   void emulate_cycle();
   void set_keys();
-
   /// @brief the function to tick the timer of beep sound
-  void tick();
+  void                tick();
+  void                print_state();
+  static Chip8System* get_instance();
 
-  void print_state();
+ private:
+  static Chip8System* instance;
+  Chip8System()  = default;
+  ~Chip8System() = default;
 };
 
 }  // namespace chip_8
