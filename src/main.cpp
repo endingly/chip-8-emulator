@@ -5,25 +5,49 @@
 
 #include <chrono>
 #include <iostream>
+#include <map>
 
 #include "chip_8.hpp"
 
 // variables
-chip_8::Chip8System* chip8System   = chip_8::Chip8System::get_instance();
-constexpr int        SCREEN_PIXELS = 5;
-constexpr int        BLACK         = 0;
-constexpr int        WHITE         = 255;
-constexpr int        PIXEL_SIZE    = 5;
-constexpr int        SCREEN_ROWS   = chip8System->SCREEN_HEIGHT * PIXEL_SIZE;
-constexpr int        SCREEN_COLS   = chip8System->SCREEN_WIDTH * PIXEL_SIZE;
+chip_8::Chip8System*                                  chip8System = chip_8::Chip8System::get_instance();
+static std::chrono::high_resolution_clock::time_point clock_prev;
+constexpr int                                         SCREEN_PIXELS = 5;
+constexpr int                                         BLACK         = 0;
+constexpr int                                         WHITE         = 255;
+constexpr int                                         PIXEL_SIZE    = 5;
+constexpr int                                         SCREEN_ROWS   = chip8System->SCREEN_HEIGHT * PIXEL_SIZE;
+constexpr int                                         SCREEN_COLS   = chip8System->SCREEN_WIDTH * PIXEL_SIZE;
+const static std::map<unsigned char, int>             key_map       = {
+    {'1', 0x1}, {'2', 0x2}, {'3', 0x3}, {'4', 0xc}, {'q', 0x4}, {'w', 0x5}, {'e', 0x6}, {'r', 0xd},
+    {'a', 0x7}, {'s', 0x8}, {'d', 0x9}, {'f', 0xe}, {'z', 0xa}, {'x', 0x0}, {'c', 0xb}, {'v', 0xf},
+};
+
+void keypress(unsigned char k, int x, int y) {
+  (void)x;
+  (void)y;
+  int index = key_map.at(k);
+  if (index >= 0) {
+    chip8System->key[index] = 1;
+  }
+}
+
+void keyrelease(unsigned char k, int x, int y) {
+  (void)x;
+  (void)y;
+  int index = key_map.at(k);
+  if (index >= 0) {
+    chip8System->key[index] = 0;
+  }
+}
 
 /// @brief Calculate time difference
 /// @param now now time point
 /// @param prev previous time point
-/// @return time difference in milliseconds
-inline int64_t timediff_ms(std::chrono::high_resolution_clock::time_point now,
+/// @return time difference in microseconds
+inline int64_t timediff_us(std::chrono::high_resolution_clock::time_point now,
                            std::chrono::high_resolution_clock::time_point prev) {
-  return std::chrono::duration_cast<std::chrono::milliseconds>(now - prev).count();
+  return std::chrono::duration_cast<std::chrono::microseconds>(now - prev).count();
 }
 
 inline void paint_pixel(int row, int col, unsigned char color) {
@@ -42,6 +66,11 @@ void paint_cell(int row, int col, unsigned char color) {
   }
 }
 
+void gfx_setup() {
+  memset(chip8System->screen, BLACK, sizeof(unsigned char) * SCREEN_ROWS * SCREEN_COLS * 3);
+  glClear(GL_COLOR_BUFFER_BIT);
+}
+
 void draw() {
   // Clear framebuffer
   glClear(GL_COLOR_BUFFER_BIT);
@@ -57,10 +86,15 @@ void draw() {
   glutSwapBuffers();
 }
 
+void reshape_window(GLsizei w, GLsizei h) {
+  (void)w;
+  (void)h;
+}
+
 void loop() {
   // Get current time
-  auto             clock_now     = std::chrono::high_resolution_clock::now();
-  static auto      clock_prev    = clock_now;
+  auto clock_now                 = std::chrono::high_resolution_clock::now();
+  clock_prev                     = clock_now;
   static const int CLOCK_RATE_MS = 1000 / 60;
 
   chip8System->emulate_cycle();
@@ -70,7 +104,7 @@ void loop() {
     chip8System->chip8_draw_flag = false;
   }
 
-  int64_t timediff = timediff_ms(clock_now, clock_prev);
+  int64_t timediff = timediff_us(clock_now, clock_prev);
   // if time difference is greater than CLOCK_RATE_MS, then we neeed tick the emulator
   if (timediff > CLOCK_RATE_MS) {
     // tick emulator
@@ -98,5 +132,21 @@ int main(int argc, char* argv[]) {
   glutInitWindowPosition(0, 0);
   glutCreateWindow("CHIP-8 Emulator");
   glutMainLoop();
+
+  // start emulator loop
+  glutDisplayFunc(draw);
+  glutIdleFunc(loop);
+  glutReshapeFunc(reshape_window);
+
+  glutKeyboardFunc(keypress);
+  glutKeyboardUpFunc(keyrelease);
+
+  gfx_setup();
+
+  // gettimeofday(&clock_prev, NULL);
+
+  // Run the emulator
+  glutMainLoop();
+
   return 0;
 };

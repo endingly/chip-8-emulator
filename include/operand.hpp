@@ -44,12 +44,14 @@ enum class OperandType : uint16_t {
   _FX65 = 0xF065
 };
 
+using OperandFunction = void (*)(uint16_t);
+
 /// @brief Base class for all operands in the Chip-8 instruction set.
 class Operand {
  private:
-  uint16_t                                                          value;
-  const static std::map<OperandType, std::function<void(uint16_t)>> isa_set;
-  static chip_8::Chip8System*                                       system;
+  uint16_t                                            value;
+  const static std::map<OperandType, OperandFunction> isa_set;
+  static chip_8::Chip8System*                         system;
 
  public:
   Operand() = default;
