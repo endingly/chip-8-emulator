@@ -5,7 +5,7 @@
 
 chip_8::Chip8System* chip_8::Operand::system = chip_8::Chip8System::get_instance();
 
-const std::map<chip_8::OperandType, std::function<void(uint16_t)>> chip_8::Operand::isa_set = {
+const std::map<chip_8::OperandType, chip_8::ISA_Function> chip_8::Operand::isa_set = {
     {chip_8::OperandType::_0NNN, call},
     {chip_8::OperandType::_00E0, clear_screen},
     {chip_8::OperandType::_00EE, return_subroutine},

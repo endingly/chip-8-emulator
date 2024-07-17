@@ -20,14 +20,6 @@ void chip_8::Chip8System::print_state() {
   std::printf("PC: 0x%04x\n", program_counter);
 }
 
-chip_8::Chip8System* chip_8::Chip8System::get_instance() {
-  if (instance == nullptr) {
-    instance = new Chip8System();
-    instance->initialize();
-  }
-  return instance;
-}
-
 void chip_8::Chip8System::initialize() {
   this->program_counter = 0x200;  // Start at 0x200
   this->operand         = 0;

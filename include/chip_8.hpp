@@ -60,9 +60,15 @@ struct Chip8System {
   void emulate_cycle();
   void set_keys();
   /// @brief the function to tick the timer of beep sound
-  void                tick();
-  void                print_state();
-  static Chip8System* get_instance();
+  void                       tick();
+  void                       print_state();
+  inline static Chip8System* get_instance() {
+    if (instance == nullptr) {
+      instance = new Chip8System();
+      instance->initialize();
+    }
+    return instance;
+  };
 
  private:
   static Chip8System* instance;
